@@ -362,44 +362,32 @@ public class mazereader {
                 rgb = maze.getRGB(col, row);
                 pixel = new Color(rgb);
                 red = pixel.getRed();
-                green = pixel.getGreen();
-                blue = pixel.getBlue();
-                intensity = Math.sqrt(red + green + blue);
-                if (red > blue && red > green && red >= 200 && redfound == false) {
-                    redfound = true;
-                    //System.out.println("red trigger" + red);
-                    colorout = new Color(255, 0, 0);
-                    //System.out.println(colorout.getRed());
-                }
-                else if (blue > red && blue > green && blue >= 200 && bluefound == false) {
-                    bluefound = true;
-                    //System.out.println("blue trigger" + blue);
-                    colorout = new Color(0, 0, 255);
-                    //System.out.println(colorout.getBlue());
-                
-                }
-            }
-        }
-        for (int row = 0; row < maze.getHeight(); row++) {
-            for (int col = 0; col < maze.getWidth(); col++) {
-                rgb = maze.getRGB(col, row);
-                pixel = new Color(rgb);
-                red = pixel.getRed();
                 red *= red;
                 green = pixel.getGreen();
                 green *= green;
                 blue = pixel.getBlue();
                 blue *= blue;
                 intensity = Math.sqrt(red + green + blue);
-                
-                if (intensity >= 350) {
-                    colorout = new Color(255, 255, 255);
-                } else {
-                    colorout = new Color(0, 0, 0);
+                if (red > blue && red > green && red >= 250 && redfound == false) {
+                    redfound = true;
+                    //System.out.println("red trigger" + red);
+                    colorout = new Color(255, 0, 0);
+                    //System.out.println(colorout.getRed());
                 }
-                
+                else if (blue > red && blue > green && blue >= 250 && bluefound == false) {
+                    bluefound = true;
+                    //System.out.println("blue trigger" + blue);
+                    colorout = new Color(0, 0, 255);
+                    //System.out.println(colorout.getBlue());
+                } else {
+                    if (intensity >= 350) {
+                        colorout = new Color(255, 255, 255);
+                    } else {
+                        colorout = new Color(0, 0, 0);
+                    }
+                }
                 mazecopy.setRGB(col, row, colorout.getRGB());
-                
+                //
             }
         }
         return mazecopy;
