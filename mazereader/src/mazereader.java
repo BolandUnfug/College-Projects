@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.time.YearMonth;
 import java.util.Scanner;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class mazereader {
     public static void main(String[] args) throws Exception {
@@ -23,9 +25,9 @@ public class mazereader {
             int heatmaparray[][] = update(map, positions, heatmapcopy);
             int path[][] = solution(map, positions[0]);
             BufferedImage heatmap = MazeSolver_HelperFunctions.visualizeDistances(heatmapcopy, heatmaparray, window);
-            imageupload(heatmap, "Heatmap.png");
+            imageupload(heatmap, "mazereader/Heatmap.png");
             BufferedImage solution = MazeSolver_HelperFunctions.visualizePath(binerizedmaze, path, window1);
-            imageupload(solution, "Solution.png");
+            imageupload(solution, "mazereader/Solution.png");
       
 
         System.out.println("mapdone");
@@ -49,28 +51,32 @@ public class mazereader {
     
     public static BufferedImage imagedownload() throws Exception {
         Scanner input = new Scanner(System.in);
-        System.out.println("Pick a maze from 1-6");
+        Path inPath = Path.of("mazereader/"+ "1.png");
+        System.out.println("Pick a maze from 1-7");
         int mazename = 1;
         BufferedImage maze;
         mazename = input.nextInt();
-        maze = ImageIO.read(new File("1.png"));
+        maze = ImageIO.read(new File("mazereader/1.png"));
         if(mazename == 1){
-            maze = ImageIO.read(new File("1.png"));
+            maze = ImageIO.read(new File("mazereader/1.png"));
         }
         if(mazename == 2){
-            maze = ImageIO.read(new File("2.png"));
+            maze = ImageIO.read(new File("mazereader/2.png"));
         }
         if(mazename == 3){
-            maze = ImageIO.read(new File("3.jpg"));
+            maze = ImageIO.read(new File("mazereader/3.jpg"));
         }
         if(mazename == 4){
-            maze = ImageIO.read(new File("4.png"));
+            maze = ImageIO.read(new File("mazereader/4.png"));
         }
         if(mazename == 5){
-            maze = ImageIO.read(new File("5.png"));
+            maze = ImageIO.read(new File("mazereader/5.png"));
         }
         if(mazename == 6){
-            maze = ImageIO.read(new File("6.png"));
+            maze = ImageIO.read(new File("mazereader/6.png"));
+        }
+        if(mazename == 7){
+            maze = ImageIO.read(new File("mazereader/7.png"));
         }
 
         
@@ -356,30 +362,42 @@ public class mazereader {
                 rgb = maze.getRGB(col, row);
                 pixel = new Color(rgb);
                 red = pixel.getRed();
+                green = pixel.getGreen();
+                blue = pixel.getBlue();
+                intensity = Math.sqrt(red + green + blue);
+                if (red > blue && red > green && red >= 200 && redfound == false) {
+                    redfound = true;
+                    //System.out.println("red trigger" + red);
+                    colorout = new Color(255, 0, 0);
+                    //System.out.println(colorout.getRed());
+                }
+                else if (blue > red && blue > green && blue >= 200 && bluefound == false) {
+                    bluefound = true;
+                    //System.out.println("blue trigger" + blue);
+                    colorout = new Color(0, 0, 255);
+                    //System.out.println(colorout.getBlue());
+                
+                }
+            }
+        }
+        for (int row = 0; row < maze.getHeight(); row++) {
+            for (int col = 0; col < maze.getWidth(); col++) {
+                rgb = maze.getRGB(col, row);
+                pixel = new Color(rgb);
+                red = pixel.getRed();
                 red *= red;
                 green = pixel.getGreen();
                 green *= green;
                 blue = pixel.getBlue();
                 blue *= blue;
                 intensity = Math.sqrt(red + green + blue);
-                if (red > blue && red > green && red >= 230 && redfound == false) {
-                    redfound = true;
-                    //System.out.println("red trigger" + red);
-                    colorout = new Color(255, 0, 0);
-                    //System.out.println(colorout.getRed());
-                }
-                else if (blue > red && blue > green && blue >= 230 && bluefound == false) {
-                    bluefound = true;
-                    //System.out.println("blue trigger" + blue);
-                    colorout = new Color(0, 0, 255);
-                    //System.out.println(colorout.getBlue());
+                
+                if (intensity >= 350) {
+                    colorout = new Color(255, 255, 255);
                 } else {
-                    if (intensity >= 350) {
-                        colorout = new Color(255, 255, 255);
-                    } else {
-                        colorout = new Color(0, 0, 0);
-                    }
+                    colorout = new Color(0, 0, 0);
                 }
+                
                 mazecopy.setRGB(col, row, colorout.getRGB());
                 
             }
