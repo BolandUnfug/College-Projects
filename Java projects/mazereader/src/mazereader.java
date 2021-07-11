@@ -170,10 +170,10 @@ public class mazereader {
         // setting the modifier for each tile
         double triggers = 0;
                 if (maze.getWidth() >= 500 && maze.getWidth() < 600){
-                    updaterate = 200;
+                    updaterate = 500;
                 }
                 else if (maze.getWidth() >= 700 && maze.getWidth() < 800){
-                    updaterate = 500;
+                    updaterate = 2500;
                 }
 
                 else if (maze.getWidth() >= 1800 && maze.getWidth() < 1900){

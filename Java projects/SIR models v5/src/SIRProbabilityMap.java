@@ -120,7 +120,7 @@ public class SIRProbabilityMap extends SIRMap{
      */
     private double gaussianWeight(double xdistance, double ydistance){
 
-        double stddev = this.size/2; // distance of one deviation
+        double stddev = this.size/10; // distance of one deviation
         double part1 = 1/(2*Math.PI*Math.pow(stddev, 2));
         double ePowFraction = (Math.pow(xdistance,2)+Math.pow(ydistance,2))/(2*Math.pow(stddev, 2));
         double e = Math.pow(Math.E, - (ePowFraction));
@@ -157,7 +157,8 @@ public class SIRProbabilityMap extends SIRMap{
         double weight;
         for(int i = 0; i < seednum; i++){ // iterates for each seed
             
-            weight = ExponentWeight(getDistance(cellx, seeds[i][0], celly, seeds[i][1])); // gets the weight of a cell from seed i
+            //weight = ExponentWeight(getDistance(cellx, seeds[i][0], celly, seeds[i][1])); // gets the weight of a cell from seed i
+            weight = gaussianWeight(getDistance(cellx, seeds[i][0]), getDistance(celly, seeds[i][1])); // gets the weight of a cell from seed i
             weights[i] = weight; // add the weight to the list
             chancemultiplier += weight; // add the weight to the total
         }

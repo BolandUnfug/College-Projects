@@ -61,7 +61,7 @@ public class SIRWriter {
      */
     public void open( int maxDays, double infectionRate, double recoveryRate, int size ){
         // Use the SIR model's fields to make the filename help users organize the results across trials
-        File file = new File("CSV files");
+        File file = new File("SIR models v5\\CSV files");
 
          
 

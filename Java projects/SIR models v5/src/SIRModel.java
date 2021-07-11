@@ -141,7 +141,7 @@ public class SIRModel implements SIR {
         double maskDensity = .75;
         int maxDays = 365;
         int mapSize = 100;
-        int frameDuration = 0;
+        int frameDuration = 300;
         
         // allows user to customize simulation parameters if they input any command line arguments
         if (args.length > 0) {
