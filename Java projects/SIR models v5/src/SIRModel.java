@@ -35,7 +35,7 @@ public class SIRModel implements SIR {
     SIRScreen screen;
     SIRProbabilityScreen probabilityscreen;
     boolean probability = true;
-    static SIRWriter file = new SIRWriter("");
+    static SIRWriter file = new SIRWriter();
     int generation;
     int maxGenerations;
 
@@ -137,11 +137,11 @@ public class SIRModel implements SIR {
         // Establish default simulation parameters, in case the user doesn't supply any command line arguments.
         double infectionRate = 0.166;
         double recoveryRate = 0.033;
-        double populationDensity = 0.1;
+        double populationDensity = 0.001;
         double maskDensity = .75;
         int maxDays = 365;
         int mapSize = 100;
-        int frameDuration = 300;
+        int frameDuration = 1;
         
         // allows user to customize simulation parameters if they input any command line arguments
         if (args.length > 0) {
@@ -162,11 +162,11 @@ public class SIRModel implements SIR {
         }
         
         
-        file.open(maxDays, infectionRate, recoveryRate, mapSize);
+        
         // Use manually input (or defualt) values to configure a new
         // SIR model, comprised of a set of SIRCells in a SIRMap and a SIRScreen display.
         SIR model = new SIRModel(infectionRate, recoveryRate, populationDensity, maskDensity, maxDays, mapSize,  frameDuration );
-        
+        file.open(maxDays, infectionRate, recoveryRate, mapSize);
         // Run the simulation
         model.simulate();
         file.close();

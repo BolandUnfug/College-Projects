@@ -2,6 +2,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -61,22 +62,26 @@ public class SIRWriter {
      */
     public void open( int maxDays, double infectionRate, double recoveryRate, int size ){
         // Use the SIR model's fields to make the filename help users organize the results across trials
-        File file = new File("SIR models v5\\CSV files");
-
+        // here is the error rn, invalid file path
+        File results = new File("CSVfiles");
+        filenum = new File("./Java projects/SIR models v5/CSVfiles").listFiles().length;
+        System.out.println(results);
+        boolean fileexists = results.exists();
+        System.out.println(fileexists);
          
 
-        
         if (fileName.length() == 0) {
-            fileName = String.format("SIR_%03d_%03d_%03d_%03d_%03d.csv", (int) (infectionRate * 1000), (int) (recoveryRate * 1000), maxDays, size, file.list().length);
+            fileName = String.format("SIR_%03d_%03d_%03d_%03d_%03d.csv", (int) (infectionRate * 1000), (int) (recoveryRate * 1000), maxDays, size, filenum);
         }
-        fileName = "SIR" + fileName;
-        outPath = Path.of("CSV files/"+fileName);
-
+        
+        outPath = Path.of(String.format("./Java projects/SIR models v5/CSVfiles/%s", fileName));
+        System.out.println(outPath);
 
         // Start the output file with a header line at the top, which names each column of data
         SIRState state;
         try {
             writer = Files.newBufferedWriter(outPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+            // BufferedWriter writer2  = Files.newBufferedWriter(outPath + fileName, cs, options)
             header = "Day";
             for( int i=0; i<SIRState.values().length; i++){
                 state = SIRState.values()[ i ];
@@ -87,6 +92,7 @@ public class SIRWriter {
             System.out.println( "Output file name: " + fileName );
         } catch(IOException e) {
             writer = null;
+            System.out.println(e);
             System.out.println( "WARNING: SIRWriter unable to create output file." );
         }
     }
