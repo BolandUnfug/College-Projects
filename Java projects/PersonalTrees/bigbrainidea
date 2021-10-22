@@ -1,0 +1,13 @@
+use recursive function for locating things
+pseudocode
+
+public node search(node, value){
+    returnednode = 0;
+    if value > node {
+        returnednode = search(highnode, value)
+    }
+    else if value < node {
+        returnednode = search(lownode, value)
+    }
+    return node;
+}

@@ -1,0 +1,13 @@
+Create an empty list
+Print the list
+add an item to the list
+check to see if an item is present in the list
+Print the list
+Remove an item from the list
+check to see if an item is present in the list
+print the list
+repeat for characters, integers, and strings
+
+expectation: Create an empty list, then print the list. it should print nothing or null
+add x items to list. then, check if one item is present. when the list prints, it should have those items.
+remove 1 item from the list. then, check if the deleted item is present, it should not be. when it prints, it should have removed the item.

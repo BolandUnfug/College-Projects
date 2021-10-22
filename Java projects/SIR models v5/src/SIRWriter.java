@@ -63,7 +63,9 @@ public class SIRWriter {
     public void open( int maxDays, double infectionRate, double recoveryRate, int size ){
         // Use the SIR model's fields to make the filename help users organize the results across trials
         // here is the error rn, invalid file path
-        File results = new File("CSVfiles");
+        
+        File results = new File("./CSVfiles");
+        System.out.println("is it a directory?" + results.isDirectory());
         filenum = new File("./Java projects/SIR models v5/CSVfiles").listFiles().length;
         System.out.println(results);
         boolean fileexists = results.exists();
@@ -80,8 +82,8 @@ public class SIRWriter {
         // Start the output file with a header line at the top, which names each column of data
         SIRState state;
         try {
-            writer = Files.newBufferedWriter(outPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
-            // BufferedWriter writer2  = Files.newBufferedWriter(outPath + fileName, cs, options)
+            BufferedWriter writer = Files.newBufferedWriter(outPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+            //BufferedWriter writer2  = Files.newBufferedWriter(outPath + fileName, cs, options)
             header = "Day";
             for( int i=0; i<SIRState.values().length; i++){
                 state = SIRState.values()[ i ];

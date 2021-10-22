@@ -1,0 +1,1 @@
+My approach is O(n), as the time taken is linearly proportional to the number of nodes in the ComplexList.
