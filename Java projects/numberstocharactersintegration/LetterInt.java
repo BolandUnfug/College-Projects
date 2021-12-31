@@ -1,4 +1,9 @@
-
+/**
+ * LetterInt, implements the Letter interface and creates ASCII characters stored in integer form.
+ * <br>
+ * can get either the ASCII number or the letter through getInt or getChar.
+ * @author Boland Unfug, 8/24/2021
+*/
 public class LetterInt implements Letter {
     private int letternum;
     LetterInt(int letternum){

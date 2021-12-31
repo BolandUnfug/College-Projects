@@ -1,7 +1,6 @@
 {
     "java.project.sourcePaths": [
-        "mazereader/src",
-        "Skiplists",
-        "Trees"
+        "Heaps",
+        "hashtableDictionaries"
     ]
 }

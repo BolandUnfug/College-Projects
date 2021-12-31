@@ -1,3 +1,9 @@
+/**
+ * LetterChar, implements the Letter interface and creates ASCII characters stored in letter form.
+ * <br>
+ * can get either the ASCII number or the letter through getInt or getChar.
+ * @author Boland Unfug, 8/24/2021
+*/
 public class LetterChar implements Letter {
     private char numletter;
     LetterChar(char numletter){
