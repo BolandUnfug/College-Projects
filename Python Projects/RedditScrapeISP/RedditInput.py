@@ -77,8 +77,7 @@ def checkSub():
         if(stock != False):
             print("adding new post: " + submission.title + " stock " + stock)
             df.loc[len(df.index)] = submission.id, submission.score, stock, m.get_current_price(stock), int((time.time()/60))
-        # print(df)
-        if(time.time() - start > 3600):
+        if(time.time() - start > 60):
             df.to_json("Raw.json")
         
             

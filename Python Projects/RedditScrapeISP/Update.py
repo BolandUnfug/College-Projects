@@ -1,8 +1,6 @@
 import praw
 import time
 from tempfile import NamedTemporaryFile
-import shutil
-import yfinance as yf
 import pandas as pd
 import Methods as m
 
