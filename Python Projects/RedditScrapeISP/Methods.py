@@ -14,7 +14,8 @@ Methods:
 import yfinance as yf
 
 def simplify(row):
-    """Removes [, ], \", and \' from a string"""
+    """Removes [, ], \", and \' from a string, returning the new string """
+    row = str(row)
     newstring = ""
     for x in row:
         if(x != "[" and x != "]" and x != "\"" and x != "\'"):
@@ -52,7 +53,7 @@ def get_current_price(symbol):
     try:
         ticker = yf.Ticker(symbol)
         todays_data = ticker.history(period='1d')
-        return int(todays_data['Close'][0])
+        return round(todays_data['Close'][0],2)
     except:
         return 0
 

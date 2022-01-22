@@ -1,50 +1,99 @@
 import praw
-import csv
 import time
 from tempfile import NamedTemporaryFile
 import shutil
 import yfinance as yf
+import pandas as pd
 import Methods as m
 
 reddit = praw.Reddit("bot1")
 
-tempfile = NamedTemporaryFile(mode='w+t', newline="", delete=False, encoding="utf8")
+def reCheck():
 
-def reCheck(): # updates the previously collected posts
-    print("Time to Update!")
+    print("time to update!")
+    merge = True
+    rawfile = open("Raw.json")
+    if rawfile.read(2) != '':
+        print("updating raw data")
+        raw = pd.read_json("Raw.json")
 
-    with open('Data.csv', newline="", encoding="utf8") as csvfile,tempfile:
-        rawdata = open('Raw.csv', 'r', newline="", encoding="utf8")
-        # row 1 only rewrites the title
-        # row 2 gets the submission id to be used later
-        # row 3 gets the mentioned stock
-        # row 4 updates the amount of upvotes a submission has
-        # row 5 updates the stock cost
-        # row 6 updates the time stamp
+        raw["Upvotes"] = raw["Upvotes"].astype('object')
+        raw["Stockprice"] = raw["Stockprice"].astype('object')
+        raw["Timestamp"] = raw["Timestamp"].astype('object')
 
-        reader = csv.reader(csvfile)
-        reader2 = csv.reader(rawdata)
-        writer = csv.writer(tempfile)
+        for row in range(len(raw)):
+            
+            print("updating row " + str(row))
+
+            prevupvote = raw.at[row, 'Upvotes']
+            prevstockprice = raw.at[row, 'Stockprice']
+            prevtime = raw.at[row, 'Timestamp']
+            
+            #for some reason new data collection is hard and long
+            newupvote = int(reddit.submission(id = raw.at[row, 'ID']).score)
+
+            newstockprice = m.get_current_price(raw.at[row, 'Stock'])
+
+            newtime = int((time.time())/60)
+            
+            raw.loc[row, 'Upvotes'] = [[prevupvote], [newupvote]]
+
+            raw.loc[row, 'Stockprice'] = [[prevstockprice], [newstockprice]]
+
+            raw.loc[row, 'Timestamp'] = [[prevtime], [newtime]]
+
+        print(raw)
+
+    else:
+        merge = False
+        print("No data in raw")
+    rawfile.close()
+
+    datafile = open("Data.json")
+    if datafile.read(2) != '':
+
+        print("updating data")
         
-        for row in reader:
-            if(row[0] != "Title"):
-                submissionid = m.simplify(row[1])
-                newscore  = m.simplify(row[3]) + ", " + str(reddit.submission(id = submissionid).score) # updates upvotes
-                newprice = m.simplify(row[4]) + ", " + str(m.get_current_price(m.simplify(row[2])))
-                newtime = m.simplify(row[5]) + ", " + str(int((time.time())/60)) # updates timestamp
-                
-                rows = [str(row[0]), str(row[1]), str(row[2]),[newscore], [newprice], [newtime]]
-                writer.writerow(rows)
-            else:
-                writer.writerow(row)
-            for rawrow in reader2:
-                print(rawrow[1])
-                rawsubmissionid = m.simplify(rawrow[1])
-                rawnewscore  = m.simplify(rawrow[3]) + ", " + str(reddit.submission(id = rawsubmissionid).score) # updates upvotes
-                rawnewprice = m.simplify(rawrow[4]) + ", " + str(m.get_current_price(m.simplify(rawrow[2])))
-                rawnewtime = m.simplify(rawrow[5]) + ", " + str(int((time.time())/60)) # updates timestamp
-                
-                rows = [str(rawrow[0]), str(rawrow[1]), str(rawrow[2]),[rawnewscore], [rawnewprice], [rawnewtime]]
-                writer.writerow(rows)
+        data = pd.read_json("Data.json")
 
-    shutil.move(tempfile.name, 'Data.csv')
+        data["Upvotes"] = data["Upvotes"].astype('object')
+        data["Stockprice"] = data["Stockprice"].astype('object')
+        data["Timestamp"] = data["Timestamp"].astype('object')
+        
+        for row in range(len(data)):
+
+            print("updating row " + str(row))
+
+            upvote = list(data.at[row, 'Upvotes'])
+            upvote.append(int(reddit.submission(id = data.at[row, 'ID']).score))
+
+            stockprice = list(data.at[row, 'Stockprice'])
+            stockprice.append(m.get_current_price(data.at[row, 'Stock']))
+
+            times = list(data.at[row, 'Timestamp'])
+            times.append(int((time.time())/60))
+            
+            #for some reason new data collection is hard and long
+            
+            data.loc[row, 'Upvotes'] = upvote
+
+            data.loc[row, 'Stockprice'] = stockprice
+
+            data.loc[row, 'Timestamp'] = times
+
+        print(data)
+    else:
+        merge = False
+        print("No data in data")
+    datafile.close()
+
+    if(merge == True):
+        result = pd.concat([raw, data], ignore_index=True)
+        result.to_json("Data.json")
+
+    else:
+        raw.to_json("Data.json")
+
+    
+
+    #print(result)

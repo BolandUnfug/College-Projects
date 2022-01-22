@@ -6,6 +6,8 @@ Process:
     Graph the top 10
 
 TODO
+Set system to pandas
+Add upvotes
 Make a filter for top posts
 Figure out how to include decimals for stock prices
     This is important, because wallstreetbets does a lot of trading with <$50 stocks, in which a dollar increase would be large and thus infrequent
@@ -23,8 +25,12 @@ import Update
 import Methods
 import time
 
-#while(True):
-#RedditInput.reCheckSub() #the stream that pulls top posts from wallstreetbets
+start = time.time()
+
+# while((time.time() - start) < 21600):
+#     print("time: " + str(int(time.time()- start)))
+RedditInput.reCheckSub() #the stream that pulls top posts from wallstreetbets
+Update.reCheck()
 #RedditInput.checkSub() # the stream that pulls new posts
 #Update.reCheck() # update the posts that have already been collected
     #time.sleep(120)

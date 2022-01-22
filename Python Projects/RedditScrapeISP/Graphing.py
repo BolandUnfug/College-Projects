@@ -31,51 +31,18 @@ def top10():
     popularposts = duplicates["Upvotes"]
     for posts in popularposts:
         print(m.simplifyrow(posts))
-    
-    # tierlist = []
-    # for posts in popularposts:
-    #     tierlist.append([posts, sum(m.simplifyrow(posts))/len(m.simplifyrow(posts))])
-    
-    # tierlist.sort(key = lambda x: x[1], reverse=True)
-
-    # top10posts = []
-    # for x in range(10):
-    #     top10posts.append(tierlist[x][0])
-
-    # for rows in duplicates:
-    #     print(rows)
-    #     for x in top10posts:
-    #         print(x)
-    #         if(rows["Upvotes"] == x):
-                
-    # topposts = pd.DataFrame(top10posts)
-    # top10duplicates = redditdata.loc[redditdata["Upvotes"].isin(topposts)]
 
     
-
-    
-    
-
-
 def graphData():
     """
     Graphs the data in Data.csv
     """
 
-    redditdata = pd.read_csv("Data.csv")
+    redditdata = pd.read_json("Data.json")
 
-    timestamps = redditdata["Timestamp"]
-    timestamps = m.simplifylist(timestamps)
-
-    upvotes = redditdata["Upvotes"]
-    upvotes = m.simplifylist(upvotes)
-
-    stockprices = redditdata["Stockprice"]
-    stockprices = m.simplifylist(stockprices)
-
-    x = timestamps
-    y1 = upvotes
-    y2 = stockprices
+    x = redditdata["Timestamp"]
+    y1 = redditdata["Upvotes"]
+    y2 = redditdata["Stockprice"]
 
     f, (ax1, ax2) = plt.subplots(1, 2, sharex=True)
 
