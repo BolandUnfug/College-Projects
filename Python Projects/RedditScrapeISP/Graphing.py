@@ -108,10 +108,12 @@ def graphData():
         ax2.plot(x[counter], y, label=m.simplify(redditdata["Stock"][counter]))  # Plot some data on the axes.
         counter += 1
 
+    
     ax1.set_xlabel('Time')  # Add an x-label to the axes.
+    ax2.set_xlabel('Time')  # Add an x-label to the axes.
     ax1.set_ylabel('Combined Upvotes')  # Add a y-label to the axes.
     ax2.set_ylabel('Stock Price')  # Add a y-label to the axes.
     ax1.set_title("Reddit Popularity")  # Add a title to the axes.
-    ax1.set_title("Stock Price")  # Add a title to the axes.
+    ax2.set_title("Stock Price")  # Add a title to the axes.
     ax1.legend();  # Add a legend.
     plt.show()
