@@ -1,67 +1,87 @@
+"""
+Updates collected reddit data.
+
+Methods:
+-------
+update()
+Updates Data.json with new data from collected posts, as well as newly located posts from Raw.json.
+
+Production
+----------
+Version 1.1
+Boland Unfug
+January 26th, 2022
+"""
+
 import praw
 import time
-from tempfile import NamedTemporaryFile
 import pandas as pd
 import Methods as m
 
 reddit = praw.Reddit("bot1")
 
-def reCheck():
+def update():
+    """
+    Updates Data.json with new data from collected posts, as well as newly located posts from Raw.json.
+
+    Important: Make sure Raw.json is either wiped/updated between updates, or repeating data will occur.
+    """
 
     print("time to update!")
+
     merge = True
+
     rawfile = open("Raw.json")
-    if rawfile.read(2) != '':
+    if rawfile.read(2) != '': # checks to see if there is data to update
         print("updating raw data")
-        raw = pd.read_json("Raw.json")
+        raw = pd.read_json("Raw.json") # extracting data from Raw.json to a dataframe
 
+        # change types to objects. this allows for lists inside lists.
         raw["Upvotes"] = raw["Upvotes"].astype('object')
-        raw["Stockprice"] = raw["Stockprice"].astype('object')
-        raw["Timestamp"] = raw["Timestamp"].astype('object')
+        raw["Stockprice"] = raw["Stockprice"].astype('object') 
+        raw["Timestamp"] = raw["Timestamp"].astype('object') 
 
-        for row in range(len(raw)):
+        for row in range(len(raw)): # for each row in raw
             
             print("updating row " + str(row))
 
+            # collect previous data
             prevupvote = raw.at[row, 'Upvotes']
             prevstockprice = raw.at[row, 'Stockprice']
             prevtime = raw.at[row, 'Timestamp']
             
-            #for some reason new data collection is hard and long
+            # collect new data
+            # for some reason new data collection is sometimes long for reddit submissions
             newupvote = int(reddit.submission(id = raw.at[row, 'ID']).score)
-
             newstockprice = m.get_current_price(raw.at[row, 'Stock'])
-
             newtime = int((time.time())/60)
             
-            raw.loc[row, 'Upvotes'] = [[prevupvote], [newupvote]]
-
+            # update the current cell with a list of the previous data and the new data
+            raw.loc[row, 'Upvotes'] = [[prevupvote], [newupvote]] 
             raw.loc[row, 'Stockprice'] = [[prevstockprice], [newstockprice]]
-
             raw.loc[row, 'Timestamp'] = [[prevtime], [newtime]]
 
-        print(raw)
-
-    else:
+            print(raw.loc[row])
+    else: # if there is no data in raw
         merge = False
         print("No data in raw")
     rawfile.close()
 
     datafile = open("Data.json")
-    if datafile.read(2) != '':
+    if datafile.read(2) != '': # checks to see if there is data to update
 
         print("updating data")
         
-        data = pd.read_json("Data.json")
-
-        data["Upvotes"] = data["Upvotes"].astype('object')
-        data["Stockprice"] = data["Stockprice"].astype('object')
-        data["Timestamp"] = data["Timestamp"].astype('object')
+        data = pd.read_json("Data.json") # extracting data from Data.json to a dataframe
         
+        # don't need to change the types to objects, as they should already be objects
+
         for row in range(len(data)):
 
             print("updating row " + str(row))
 
+            # collect the data in the row, then append the new data
+            # for some reason data collection for reddit is sometimes long
             upvote = list(data.at[row, 'Upvotes'])
             upvote.append(int(reddit.submission(id = data.at[row, 'ID']).score))
 
@@ -71,7 +91,7 @@ def reCheck():
             times = list(data.at[row, 'Timestamp'])
             times.append(int((time.time())/60))
             
-            #for some reason new data collection is hard and long
+            # update the current cell with a new list of data
             
             data.loc[row, 'Upvotes'] = upvote
 
@@ -79,19 +99,14 @@ def reCheck():
 
             data.loc[row, 'Timestamp'] = times
 
-        print(data)
-    else:
+            print(data.loc[row])
+    else: # if there is no data in data
         merge = False
         print("No data in data")
     datafile.close()
 
-    if(merge == True):
-        result = pd.concat([raw, data], ignore_index=True)
+    if(merge == True): # if there is data in both files
+        result = pd.concat([raw, data], ignore_index=True) # merge files, ignoring index
         result.to_json("Data.json")
-
     else:
         raw.to_json("Data.json")
-
-    
-
-    #print(result)
