@@ -55,13 +55,18 @@ def update():
             newupvote = int(reddit.submission(id = raw.at[row, 'ID']).score)
             newstockprice = m.get_current_price(raw.at[row, 'Stock'])
             newtime = int((time.time())/60)
+
+            #ids = ['aoe4pk']
+            #ids2 = [i if i.startswith('t3_') else f't3_{i}' for i in ids]
+            #for submission in reddit.info(ids2):
+	        #print(submission.title)
             
             # update the current cell with a list of the previous data and the new data
             raw.loc[row, 'Upvotes'] = [[prevupvote], [newupvote]] 
             raw.loc[row, 'Stockprice'] = [[prevstockprice], [newstockprice]]
             raw.loc[row, 'Timestamp'] = [[prevtime], [newtime]]
 
-            print(raw.loc[row])
+            #print(raw.loc[row])
     else: # if there is no data in raw
         merge = False
         print("No data in raw")
@@ -99,7 +104,7 @@ def update():
 
             data.loc[row, 'Timestamp'] = times
 
-            print(data.loc[row])
+            #print(data.loc[row])
     else: # if there is no data in data
         merge = False
         print("No data in data")

@@ -146,11 +146,11 @@ def graphData():
 
     counter = 0 # used for x positions
     for y in y1: # graph data in y1
-        ax1.plot(x[counter], y, label=m.simplify(redditdata["Stock"][counter])) # graph 1 line
+        ax1.plot(x[counter], y, label=m.simplify(redditdata["Stock"][counter], ["[", "]"])) # graph 1 line
         counter += 1
     counter = 0 # reset counter
     for y in y2: # graph data in y2
-        ax2.plot(x[counter], y, label=m.simplify(redditdata["Stock"][counter])) # graph 1 line
+        ax2.plot(x[counter], y, label=m.simplify(redditdata["Stock"][counter], ["[", "]"])) # graph 1 line
         counter += 1
 
     # make graph pretty
@@ -159,7 +159,7 @@ def graphData():
     ax1.set_ylabel('Combined Upvotes')  
     ax2.set_ylabel('Stock Price')  
     ax1.set_title("Reddit Popularity")  
-    ax2.set_title("Stock Price")  
+    ax2.set_title("Stock Price")
     ax1.legend()
     # show the graph
     plt.show()

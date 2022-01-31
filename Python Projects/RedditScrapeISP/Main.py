@@ -10,13 +10,14 @@ Process:
 
 TODO
 find a way to get change over time
-Figure out how to speed up the update process - getinfo? sometimes its fast enough
+Found a way to speed up reddit, but it does not work in a loop system - figure that out
 add Docstrings to all methods and files
 why did the timings not add up?
 Clean up json file formatting
 Clean up code formatting
     Do I add examples?
 2 different duplicates? 1 is TQQQ the other is QQQ but also has TQQQ in it?
+differences in graphing
 """
 
 import RedditInput
@@ -27,9 +28,9 @@ import time
 
 start = time.time()
 #RedditInput.reCheckSub() #the stream that pulls top posts from wallstreetbets
-# Update.update()
+Update.update()
 # while((time.time() - start) < 21600):
 #     print("time: " + str(int(time.time()- start)))
-RedditInput.checkSub() # the stream that pulls new posts
+#RedditInput.checkSub() # the stream that pulls new posts
 #     Update.update() # update the posts that have already been collected
 Graphing.graphData()
