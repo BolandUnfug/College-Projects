@@ -11,6 +11,9 @@ Process:
 TODO
 find a way to get change over time
 Found a way to speed up reddit, but it does not work in a loop system - figure that out
+    - Break loop into two, one that gathers data and one that updates
+    - Create a function so that I can apply it to the Slice in one line
+    - Gather upvotes seperately, and then update 
 add Docstrings to all methods and files
 why did the timings not add up?
 Clean up json file formatting

@@ -39,10 +39,19 @@ def update():
         # change types to objects. this allows for lists inside lists.
         raw["Upvotes"] = raw["Upvotes"].astype('object')
         raw["Stockprice"] = raw["Stockprice"].astype('object') 
-        raw["Timestamp"] = raw["Timestamp"].astype('object') 
+        raw["Timestamp"] = raw["Timestamp"].astype('object')
+
+        
+        submissionids = []
+        #newupvote = int(reddit.submission(id = raw.at[row, 'ID']).score)
+        for row in range(len(raw)):
+            submissionids.append(raw.at[row, 'ID'])
+
+        newupvotes = []
+        ids2 = []
+        for submission in reddit.info(ids2):
 
         for row in range(len(raw)): # for each row in raw
-            
             print("updating row " + str(row))
 
             # collect previous data
@@ -52,7 +61,7 @@ def update():
             
             # collect new data
             # for some reason new data collection is sometimes long for reddit submissions
-            newupvote = int(reddit.submission(id = raw.at[row, 'ID']).score)
+            #newupvote = 
             newstockprice = m.get_current_price(raw.at[row, 'Stock'])
             newtime = int((time.time())/60)
 
@@ -110,8 +119,8 @@ def update():
         print("No data in data")
     datafile.close()
 
-    if(merge == True): # if there is data in both files
-        result = pd.concat([raw, data], ignore_index=True) # merge files, ignoring index
-        result.to_json("Data.json")
-    else:
-        raw.to_json("Data.json")
+    # if(merge == True): # if there is data in both files
+    #     result = pd.concat([raw, data], ignore_index=True) # merge files, ignoring index
+    #     result.to_json("Data.json")
+    # else:
+    #     raw.to_json("Data.json")
