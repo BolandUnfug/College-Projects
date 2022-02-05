@@ -138,7 +138,8 @@ def graphData():
     redditdata = sorteddata.head(10) # cut off any below 10
     
     # simplify variables
-    x = redditdata["Timestamp"] 
+    x = redditdata["Timestamp"]
+    
     y1 = redditdata["Upvotes"]
     y2 = redditdata["Stockprice"]
 

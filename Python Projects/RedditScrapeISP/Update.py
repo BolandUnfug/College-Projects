@@ -41,15 +41,15 @@ def update():
         raw["Stockprice"] = raw["Stockprice"].astype('object') 
         raw["Timestamp"] = raw["Timestamp"].astype('object')
 
-        
+        # gets a set of new upvotes, all at once
         submissionids = []
-        #newupvote = int(reddit.submission(id = raw.at[row, 'ID']).score)
         for row in range(len(raw)):
             submissionids.append(raw.at[row, 'ID'])
-
         newupvotes = []
-        ids2 = []
-        for submission in reddit.info(ids2):
+        submissions = [i if i.startswith('t3_') else f't3_{i}' for i in submissionids] # idk what this does
+        for submission in reddit.info(submissions):
+            newupvotes.append(submission.score)
+        #
 
         for row in range(len(raw)): # for each row in raw
             print("updating row " + str(row))
@@ -64,18 +64,13 @@ def update():
             #newupvote = 
             newstockprice = m.get_current_price(raw.at[row, 'Stock'])
             newtime = int((time.time())/60)
-
-            #ids = ['aoe4pk']
-            #ids2 = [i if i.startswith('t3_') else f't3_{i}' for i in ids]
-            #for submission in reddit.info(ids2):
-	        #print(submission.title)
             
             # update the current cell with a list of the previous data and the new data
-            raw.loc[row, 'Upvotes'] = [[prevupvote], [newupvote]] 
+            raw.loc[row, 'Upvotes'] = [[prevupvote], [newupvotes[row]]] 
             raw.loc[row, 'Stockprice'] = [[prevstockprice], [newstockprice]]
             raw.loc[row, 'Timestamp'] = [[prevtime], [newtime]]
 
-            #print(raw.loc[row])
+        print(raw)
     else: # if there is no data in raw
         merge = False
         print("No data in raw")
@@ -90,6 +85,22 @@ def update():
         
         # don't need to change the types to objects, as they should already be objects
 
+        # gets a set of new upvotes, all at once
+        print("starting timer")
+        start = time.time()
+        submissionids = []
+        for row in range(len(data)):
+            submissionids.append(data.at[row, 'ID'])
+        print("it took " + str(time.time() - start) + "seconds to append IDs")
+        start = time.time()
+        newupvotes = []
+        submissions = [i if i.startswith('t3_') else f't3_{i}' for i in submissionids] # idk what this does
+        for submission in reddit.info(submissions):
+            newupvotes.append(submission.score)
+        print("it took " + str(time.time() - start) + "seconds to gather reddit data")
+        start = time.time()
+        #
+
         for row in range(len(data)):
 
             print("updating row " + str(row))
@@ -97,7 +108,7 @@ def update():
             # collect the data in the row, then append the new data
             # for some reason data collection for reddit is sometimes long
             upvote = list(data.at[row, 'Upvotes'])
-            upvote.append(int(reddit.submission(id = data.at[row, 'ID']).score))
+            upvote.append(newupvotes[row])
 
             stockprice = list(data.at[row, 'Stockprice'])
             stockprice.append(m.get_current_price(data.at[row, 'Stock']))
@@ -113,14 +124,14 @@ def update():
 
             data.loc[row, 'Timestamp'] = times
 
-            #print(data.loc[row])
+        print(data)
     else: # if there is no data in data
         merge = False
         print("No data in data")
     datafile.close()
 
-    # if(merge == True): # if there is data in both files
-    #     result = pd.concat([raw, data], ignore_index=True) # merge files, ignoring index
-    #     result.to_json("Data.json")
-    # else:
-    #     raw.to_json("Data.json")
+    if(merge == True): # if there is data in both files
+        result = pd.concat([raw, data], ignore_index=True) # merge files, ignoring index
+        result.to_json("Data.json")
+    else:
+        raw.to_json("Data.json")
