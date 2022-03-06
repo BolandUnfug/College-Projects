@@ -34,7 +34,7 @@ public class SIRModel implements SIR {
     SIRProbabilityMap probabilitymap;
     SIRScreen screen;
     SIRProbabilityScreen probabilityscreen;
-    boolean probability = false;
+    boolean probability = true;
     static SIRWriter file = new SIRWriter();
     int generation;
     int maxGenerations;

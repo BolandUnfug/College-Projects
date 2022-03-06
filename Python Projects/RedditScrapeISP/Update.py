@@ -99,7 +99,7 @@ def update():
             newupvotes.append(submission.score)
         print("it took " + str(time.time() - start) + "seconds to gather reddit data")
         start = time.time()
-        #
+        
 
         for row in range(len(data)):
 

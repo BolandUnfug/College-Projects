@@ -100,7 +100,7 @@ def getPopular():
         duplicatelist = allduplicates[allduplicates['Stock'].str.contains(dupe)] 
         # a list of upvotes from duplicatelist, with zeroes inserted
         dupeupvotes = insertZeros(list(duplicatelist["Upvotes"])) 
-
+        
         # adds the list of upvotes from each duplicate stock instance together
         sums = []
         for nums in range(len(dupeupvotes[0])):

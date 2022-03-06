@@ -10,13 +10,10 @@ Process:
 
 TODO
 find a way to get change over time
-Improved Update, still not super fast, but fast enough
-add Docstrings to all methods and files
+Improved Update, still not super fast, but fast enough?
 why did the timings not add up?
 Clean up json file formatting
-Clean up code formatting
-    Do I add examples?
-2 different duplicates? 1 is TQQQ the other is QQQ but also has TQQQ in it?
+2 different duplicates? 1 is TQQQ the other is QQQ but also has TQQQ in it?, now its doing that with GME
 differences in graphing
 """
 
