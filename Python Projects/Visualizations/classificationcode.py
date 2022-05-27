@@ -26,7 +26,7 @@ from matplotlib import cm			# colormap definitions, e.g. "viridis"
 import visualization as vis			# file I/O
 import statistics as stats
 # import naive_bayes as nb			# naive bayes classification
-import pca_template as pca			# PCA analysis
+import pca as pca			# PCA analysis
 # import knn							# K nearest neighbors classification
 
 def partition( X, C, pct_train=.75 ):

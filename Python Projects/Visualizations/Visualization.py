@@ -24,6 +24,7 @@ import matplotlib.pyplot as plt		# data visualizations, e.g. plot() and imshow()
 import matplotlib.animation as ani
 import ffmpeg
 from matplotlib import cm			# colormap definitions, e.g. "viridis"
+import pca
 
 def histogram (data, headers, title=""):
 
@@ -379,11 +380,11 @@ def main( argv ):
 	# If your plots are coming up empty, you may need to remove NaN ("Not a Number") elements like missing values
 	# and non-numeric columns from your data matrix. You can accomplish that by uncommenting the next line:
 	# data, headers = remove_nans( data, headers )
-	histogram(data, headers, "yes")
-	scatter( data, headers, col_x=0, col_y=1, col_c=class_col, title=title )	# pick any X and Y columns you want
-	pair_plot(data, headers, class_col=class_col, title=title )				
+	#histogram(data, headers, "yes")
+	#scatter( data, headers, col_x=0, col_y=1, col_c=class_col, title=title )	# pick any X and Y columns you want
+	#pair_plot(data, headers, class_col=class_col, title=title )		
 	heatmap( data, headers, title=title )
-	literalHeatMap(data[:,[0,1,6]], title=title)
+	#literalHeatMap(data[:,[0,1,6]], title=title)
 
 	plt.show()
 

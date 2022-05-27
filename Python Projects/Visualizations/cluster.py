@@ -10,9 +10,9 @@ Execution:		>> python3 cluster.py [path_to_dataset, str] [class_column_header, s
 
 Requires visualization.py and pca.py in the same folder
 
-TODO: 
-@author YOUR NAME HERE
-@date YOUR DATE HERE
+
+@author Boland Unfug
+@date April 19th 2022
 '''
 
 import sys							# command line parameters
@@ -23,9 +23,9 @@ import matplotlib.pyplot as plt		# plotting
 from matplotlib import cm			# colormap definitions, e.g. "viridis"
 
 import visualization as vis			# file I/O
-import pca
+import pca as pca
 
-# TODO:
+
 def calc_inertia( X, C, means ):
 	''' Calculate the within-cluster sum of squares.  \n
 
@@ -37,9 +37,16 @@ def calc_inertia( X, C, means ):
 	RETURNS \n
 	-- inertia: float, the sum of squared distances from each sample to the mean of its assigned cluster
 	'''
-	inertia = None
-	return inertia
 
+	inertia = 0.0
+	k = means.shape[0]
+	for clusters in range (k):
+		in_cluster = C == clusters
+		X_c = X[in_cluster, :]
+		dist = np.sum((X_c - means[clusters,:])**2)
+		inertia += dist
+
+	return inertia
 
 # TODO:
 def k_means( X, k=2, animate=False, headers=[], title="" ):
@@ -58,26 +65,29 @@ def k_means( X, k=2, animate=False, headers=[], title="" ):
 		inertia: float, the within-cluster sum of squares
 	'''
 	C, means, inertia = None, None, None # TODO: Delete this when you're ready to debug
-
+	#get n and m
+	#get 
 	# TODO: Initialize the k clusters' Means and the n samples' cluster assignments
-
-	# TODO: Adjust the means until samples stop changing clusters
+	while (np.sum(C-C_old) != 0):
+	# TODO: Adjust the means until samples stop changing clusters # this is wrong
+															# for s in range(X.shape[0]):
+															# 	dist = np.sum(((X[k,:]-means)**2),axis=1)
+															# 	sq_dist = np.zeroes((n,k))
+															# 	C[i] = np.argmin(sq_dist)
+															# for cluster in range(k):
+															# 	sq_dist[:,cluster] = np.sum((X-means[cluster,:])**2, axis = 1)
 
 		# TODO: Check for clusters that contain zero samples, and randomly reassign their means
 
-
 		# TODO: Update clusters' means and samples' distances
-		
-		
+		C_old = C
 		# TODO: Update samples' cluster assignments
-
 
 	# TODO: compute inertia
 	
 	return C, means, inertia
 
 
-# TODO:
 def e_step( X, means, covs, priors ):
 	''' Update EM's responsibilities. 
 
@@ -90,13 +100,23 @@ def e_step( X, means, covs, priors ):
 	Returns: \n
 		repsonsibility: (n,k) ndarray of the probabilities that each cluster explains each sample \n
 	'''
-	responsibility = None
+
+	k = means.shape[0]
+	n,m = X.shape
+
+	prob_x = np.zeroes((k,))
+	responsibility = np.zeroes((m,k))
+
+	for i in range(n):
+		x = X[i,:]
+		for cluster in range(k):
+			prob_x[cluster] = gaussian( x, means[cluster,:], covs[cluster,:,:])
+		responsibility[i,:] = priors * prob_x / np.sum(priors*prob_x)
 	return responsibility
 
 
-# TODO:
 def m_step( X, responsibility ):
-	''' Update EM's means, covariances, and prior probailities (mixing coefficients). 
+	''' Update EM's means, covariances, and prior probailities (mixing coefficients).
 
 	Args: \n
 		X: (n,m) ndarray of n samples (rows), with m features (columns) each \n
@@ -110,15 +130,31 @@ def m_step( X, responsibility ):
 	'''
 	Nk, means, covs, priors = None, None, None, None	# TODO: delete
 
+	k = responsibility.shape[1]
+	n = X.shape[0]
+	m = X.shape[1]
+	means = np.zeros((k,m))
+	covs = np.zeroes((k,m,m))
 	# TODO: Update cluster populations, Nk
+	Nk = np.sum ( responsibility, axis = 0)
+	for cluster in range(k):
+		gamma = responsibility[:,cluster].reshape((n,1))
 
 	# TODO: Update means and covariance matrices
 
+		means [cluster,:] = (1/Nk[cluster]) * np.sum(gamma * X, axis=0)
+		diff = X - means[cluster,:]
+		print(diff.shape, gamma.shape)
+		sigma = (gamma * diff).T @ diff
+		covs[cluster,:,:] = (1/Nk[cluster]) * sigma
+	
 	# TODO: Update mixing coefficients
+
+	
+
 	return Nk, means, covs, priors
 
-
-# TODO: 
+ 
 def log_likelihood( X, means, covs, priors ):
 	''' Calculate the total log likelihood of samples appearing in these clusters. 
 
@@ -131,7 +167,14 @@ def log_likelihood( X, means, covs, priors ):
 	Returns: \n
 		likelihood: float, total log likelihood
 	'''
-	likelihood = None	# TODO: replace with a more useful equation
+	likelihood = None	#: replace with a more useful equation
+	k = means.shape[0]
+	n = X.shape[0]
+	for j in range (n):
+		inside = 0.0
+		for cluster in range (k):
+			inside += priors[cluster] + gaussian(X[j,:], means[cluster,:], covs[cluster,:,:])
+		likelihood += np.log(inside)
 	return likelihood
 
 
@@ -268,26 +311,20 @@ def print_cluster_stats( X, C, title="" ):
 		title: str, text to display at the top of the printout, e.g. f"{dataset_name}: {algorithm_name} Clustering"
 	'''
 	# Determine number of clusters, and their names
-	print(C)
 	cluster_id, population = np.unique( C, return_counts=True )
 	k = len( cluster_id ) 
-	print(cluster_id)
+
 	# Measure overall inertia
 	n, m = X.shape
 	means = np.zeros((k,m))
 	for cluster in range( k ):
 		cid = cluster_id[ cluster ]
-		print(cid.shape)
 		in_cluster = C == cid 
 		X_c = X[ in_cluster, : ]
-		print(means.shape)
-		print(X_c.shape)
-		print(in_cluster.shape)
 		means[ cid, : ] = np.mean(X_c, axis=0)
 	inertia = calc_inertia( X, C, means )
 
 	# Display cluster characteristics in the terminal
-	
 	print( f"\n\n{title.upper()}" )
 	print( f"clusters = {k:d}" )
 	print( f"inertia  = {inertia:.3f}" )
@@ -343,7 +380,7 @@ def main( argv ):
 	else:
 		#filepath = "../data/iris_preproc.csv"
 		current_directory = os.path.dirname(__file__)
-		filepath = os.path.join(current_directory, "..", "data", "iris_preproc.csv")
+		filepath = os.path.join(current_directory, "data", "iris_preproc.csv")
 
 	# Read in the dataset and remove NaNs
 	data, headers, title = vis.read_csv( filepath )
@@ -380,7 +417,7 @@ def main( argv ):
 					X_headers.append( headers[ X_idx ] )
 					if len(X_headers) > 1:
 						X = np.hstack( (X, data[ :, X_idx ].reshape((n,1))) )
-					else: 
+					else:
 						X = data[ :, X_idx ].reshape((n,1))
 					print( f"X input feature(s) selected: {X_headers}" )
 				else:

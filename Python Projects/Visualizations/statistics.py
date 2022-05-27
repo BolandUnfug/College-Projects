@@ -342,17 +342,17 @@ def main( argv ):
 	# Visualize the stats!
 	# turn into a system to graph each relationship against one
 	heatmap_cov( data, headers, col_c=class_col, title=f"{title} Covariance" )
-	scatter_gauss( data, headers, col_x=1, col_y=12, col_c=class_col, title=title )
-	scatter_gauss( data, headers, col_x=2, col_y=12, col_c=class_col, title=title )
-	scatter_gauss( data, headers, col_x=3, col_y=12, col_c=class_col, title=title )
-	scatter_gauss( data, headers, col_x=4, col_y=12, col_c=class_col, title=title )
-	scatter_gauss( data, headers, col_x=5, col_y=12, col_c=class_col, title=title )
-	scatter_gauss( data, headers, col_x=6, col_y=12, col_c=class_col, title=title )
-	scatter_gauss( data, headers, col_x=7, col_y=12, col_c=class_col, title=title )
-	scatter_gauss( data, headers, col_x=8, col_y=12, col_c=class_col, title=title )
-	scatter_gauss( data, headers, col_x=9, col_y=12, col_c=class_col, title=title )
-	scatter_gauss( data, headers, col_x=10, col_y=12, col_c=class_col, title=title )
-	scatter_gauss( data, headers, col_x=11, col_y=12, col_c=class_col, title=title )
+	# scatter_gauss( data, headers, col_x=1, col_y=12, col_c=class_col, title=title )
+	# scatter_gauss( data, headers, col_x=2, col_y=12, col_c=class_col, title=title )
+	# scatter_gauss( data, headers, col_x=3, col_y=12, col_c=class_col, title=title )
+	# scatter_gauss( data, headers, col_x=4, col_y=12, col_c=class_col, title=title )
+	# scatter_gauss( data, headers, col_x=5, col_y=12, col_c=class_col, title=title )
+	# scatter_gauss( data, headers, col_x=6, col_y=12, col_c=class_col, title=title )
+	# scatter_gauss( data, headers, col_x=7, col_y=12, col_c=class_col, title=title )
+	# scatter_gauss( data, headers, col_x=8, col_y=12, col_c=class_col, title=title )
+	# scatter_gauss( data, headers, col_x=9, col_y=12, col_c=class_col, title=title )
+	# scatter_gauss( data, headers, col_x=10, col_y=12, col_c=class_col, title=title )
+	# scatter_gauss( data, headers, col_x=11, col_y=12, col_c=class_col, title=title )
 
 
 
