@@ -24,8 +24,8 @@ import Methods
 import time
 
 start = time.time()
-#RedditInput.reCheckSub() #the stream that pulls top posts from wallstreetbets
-#Update.update()
+RedditInput.reCheckSub() #the stream that pulls top posts from wallstreetbets
+Update.update()
 # while((time.time() - start) < 21600):
 #     print("time: " + str(int(time.time()- start)))
 #RedditInput.checkSub() # the stream that pulls new posts

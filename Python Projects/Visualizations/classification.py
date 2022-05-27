@@ -160,7 +160,7 @@ def predict_nb(means, variances, priors, X):
 	variances -- (k, m) ndarray of the variance of each class, each m features wide \n
 	priors -- (k,) ndarray of the prior probability a sample belonging to each class \n
 	X -- (n,m) ndarray of n samples to be classified, each m features wide \n
-
+	
 	RETURNS \n
 	C_pred -- (n,1) ndarray of predicted class labels for each sample in X \n
 	P_pred -- (n,1) ndarray of our confidence that each sample belongs to its predicted class
@@ -188,8 +188,8 @@ def predict_nb(means, variances, priors, X):
 		exponent = -0.5 * (X - mu)**2 / sigma
 		P_s_c[:, C] =np.prod( height * np.exp(exponent), axis=1)
 	P_c_s = P_s_c * priors
-	#print("P_s_c" + str(P_s_c))
-	#print("P_c_s" + str(P_c_s))
+	print("P_s_c" + str(P_s_c))
+	print("P_c_s" + str(P_c_s))
 	# 3. TODO: Assign each sample to the class with the greatest probability
 	C_pred = np.argmax(P_c_s, axis=1)
 	P_pred = np.max(P_c_s, axis=1)

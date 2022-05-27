@@ -122,16 +122,20 @@ def reconstruct( Y, P, X_mean, X_std ):
 	X_rec -- (n,m) ndarray representing the reconstructed dataset. 
 	'''
 	#X_rec = None	#TODO: Remove this line when you've implemented reconstruction
-	
+
 	# TODO: Undo projection by padding Y with zeros (adding columns of zeros to the righthand side)
-	X_rec = (Y @ P[:,0].T) # and I also removed d here
+	
+	print(Y.shape)
+	print(P.shape)
+	d = Y.shape[1] # this is a temp value, for some reason d is never given here.
+	X_rec = (Y @ P[:,0:d].T)*X_std + X_mean
 	# TODO: Undo rotatation using P
 
 	# TODO: Undo scale using X_std
-	X_rec = X_rec*X_std
+	
 	# TODO: Undo translation using X_mean
-	X_rec = X_rec + X_mean
 	return X_rec
+
 
 def scree_plot( eigenvals ):
 	"""Visualize information retention per eigenvector.
@@ -206,7 +210,57 @@ def pc_heatmap( P, e_scaled, X_headers ):
 	plt.pause(0.001)
 	return None
 
+def pca_processing (X, X_headers, d=2, C=None, C_header=None):
+	''' Use PCA to project X onto a d-dimensional subspace defined by its first d principal components.
 
+	ARGS:
+	X -- (n,m) ndarray containing the original dataset's input features (WITHOUT class column, if applicable)
+	X_headers -- list of strings that define the name of each input feature (column) in X
+	d -- integer number of dimensions to project onto, must be <= m
+	C -- optional (n,1) ndarray contianing column of class labels
+	C_header -- optional string that defines the name of the class feature (column) in the original dataset
+
+	RETURNS:
+	Y -- (n,d) ndarray containing the compressed dataset rotated and projected onto the first d principal components.
+	P -- (m,d) ndarray containing the first d principal components (eigenvectors), sorted in order of decreasing eigenvalues
+	e_scaled -- (d,) ndarray containing the scaled eigenvalues (% info retained) of each PC
+	'''
+
+	# Normalize features by Z-score (so that features' units don't dominate PCs)
+	var = np.var( X, axis=0 )
+	if np.min(np.abs(var)) == 0.0:
+		# there is at least one feature with zero variance ==> can center but cannot Z-transform
+		X_mean = np.mean(X, axis=0)
+		X_norm = X - X_mean
+		X_std = np.ones(X_mean.shape)		
+	else:
+		# safe to Z-transform
+		X_norm, X_mean, X_std = z_transform( X )
+
+	# Choose PCA-COV or PCA-SVD based on dimensionality of the dataset
+	n,m = X.shape
+	if n > m:
+		# more samples than features, so COV is safe.
+		Y, P, e_scaled = pca_cov( X_norm )
+	else:
+		# more features than samples, so COV with break. Use SVD instead.
+		Y, P, e_scaled = pca_svd( X_norm )
+
+	# Project onto the first d PCs
+	Y = Y[:,0:d]
+
+	Y_headers = []
+	for p in range(d):
+		Y_headers.append( f"PC{p}\ne{p}={e_scaled[p]:.2f}" )
+	
+	# Sanity check: Print PCs and eigenvalues in the terminal
+	print( "Eigenvectors (each column is a PC): \n\n", P, "\n" )
+	print("\nScaled eigenvalues: \t", e_scaled, "\n" )
+
+	return Y, P, e_scaled
+
+
+	
 def pca_analysis( X, X_headers, d=2, C=None, C_header=None ):
 	''' Use PCA to project X onto a d-dimensional subspace defined by its first d principal components.
 
@@ -224,7 +278,7 @@ def pca_analysis( X, X_headers, d=2, C=None, C_header=None ):
 	'''
 
 	# Visualize raw data
-	if type(C) == None:
+	if type(C) != np.ndarray:
 		# No class label provided. Scatter all samples in the same color
 		vis.scatter( X, X_headers, 0, 1, title="Original Dataset" )
 		vis.heatmap( X, X_headers, title="Original Dataset" )
@@ -275,7 +329,7 @@ def pca_analysis( X, X_headers, d=2, C=None, C_header=None ):
 	pc_heatmap( P, e_scaled, X_headers )
 
 	# Visualize PCA data
-	if type(C) == None:
+	if type(C) != np.ndarray:
 		# No class label provided. Scatter all samples in the same color
 		vis.scatter( Y, Y_headers, 0, 1, title="2D PCA Projection" )
 		vis.heatmap( Y, Y_headers, title=f"{d}-D PCA Projection" )
@@ -291,6 +345,8 @@ def pca_analysis( X, X_headers, d=2, C=None, C_header=None ):
 	# RMSE of the reconstruction
 	rmse = (np.sqrt(np.sum( (X - X_rec)**2, axis=1 ) / n)).flatten()[0]
 	print( f"RMSE of {d}-D reconstruction = {rmse:.6f}")
+
+	vis.scatter(X_rec, Y_headers, 0, 1, title = f"RMSE of {d}-D reconstruction = {rmse:.6f}" )
 
 	return Y, P, e_scaled
 

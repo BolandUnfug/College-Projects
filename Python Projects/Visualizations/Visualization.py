@@ -25,6 +25,30 @@ import matplotlib.animation as ani
 import ffmpeg
 from matplotlib import cm			# colormap definitions, e.g. "viridis"
 
+def histogram (data, headers, title=""):
+
+	n_bins = 10
+	x = data
+
+	fig, ((ax0, ax1), (ax2, ax3)) = plt.subplots(nrows=2, ncols=2)
+
+	ax0.hist(x, n_bins, density=True, histtype='bar', label=headers)
+	ax0.legend(prop={'size': 10})
+	ax0.set_title('bars with legend')
+
+	ax1.hist(x, n_bins, density=True, histtype='bar', stacked=True)
+	ax1.set_title('stacked bar')
+
+	ax2.hist(x, n_bins, histtype='step', stacked=True, fill=False)
+	ax2.set_title('stack step (unfilled)')
+
+	# Make a multiple-histogram of data-sets with different length.
+	x_multi = [np.random.randn(n) for n in [10000, 5000, 2000]]
+	ax3.hist(x_multi, n_bins, histtype='bar')
+	ax3.set_title('different sample sizes')
+
+	fig.tight_layout()
+	plt.show()
 
 def literalHeatMap( data, title=""):
 	'''
@@ -84,9 +108,6 @@ def literalHeatMap( data, title=""):
 	anim = ani.FuncAnimation(fig, animate, frames = 517, interval = 1, blit=True) 
 	plt.show()
 
-	
-
-
 def scatter( data, headers, col_x, col_y, col_c=None, title="" ):
 	'''
 	ARGS:
@@ -135,7 +156,6 @@ def scatter( data, headers, col_x, col_y, col_c=None, title="" ):
 		ax.scatter( x=data[ :, col_x ], y=data[ :, col_y ] )
 
 	return fig
-
 
 def pair_plot( data, headers, class_col=None, title="" ):
 	'''
@@ -212,7 +232,6 @@ def pair_plot( data, headers, class_col=None, title="" ):
 
 	return fig
 
-
 def heatmap( data, headers, title="" ):
 	'''
 	Represents the data matrix as a heatmap, assigning a color to each cell. Cell annotations are included if the cells are large enough. 
@@ -255,7 +274,6 @@ def heatmap( data, headers, title="" ):
 	fig.tight_layout()
 	return fig
 
-
 def remove_nans( data, headers ):
 	''' Remove entirely non-numeric features and rows with missing values. 
 	Return the clean dataset and updated headers (non-numeric feature names removed. 
@@ -289,7 +307,6 @@ def remove_nans( data, headers ):
 	print(numeric_data.shape[0] - complete_data.shape[0], "NaN and/or outlier rows culled from numeric dataset")
 
 	return complete_data, numeric_headers
-
 
 def read_csv( filepath, delimiter="," ):
 	'''
@@ -334,7 +351,6 @@ def read_csv( filepath, delimiter="," ):
 	
 	return data, headers, title #, class_labels
 
-
 def main( argv ):
 	''' Parse command line arguments: 
 		-- argv[0] is always the name of the program run from the terminal
@@ -363,7 +379,7 @@ def main( argv ):
 	# If your plots are coming up empty, you may need to remove NaN ("Not a Number") elements like missing values
 	# and non-numeric columns from your data matrix. You can accomplish that by uncommenting the next line:
 	# data, headers = remove_nans( data, headers )
-
+	histogram(data, headers, "yes")
 	scatter( data, headers, col_x=0, col_y=1, col_c=class_col, title=title )	# pick any X and Y columns you want
 	pair_plot(data, headers, class_col=class_col, title=title )				
 	heatmap( data, headers, title=title )
